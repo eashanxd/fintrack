@@ -1,0 +1,432 @@
+/* ============================================
+   Premium Modal - Inspired by Stripe, Linear, Revolut
+   ============================================ */
+
+/* CSS Variables for consistent theming */
+:root {
+  --modal-backdrop-bg: rgba(0, 0, 0, 0.7);
+  --modal-bg: #16171d;
+  --modal-border: rgba(255, 255, 255, 0.1);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                   0 0 0 1px rgba(255, 255, 255, 0.05);
+  
+  --text-primary: #fafafa;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  
+  --primary-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  --primary-color: #6366f1;
+  --primary-hover: #5558e3;
+  
+  --danger-color: #ef4444;
+  --danger-bg: rgba(239, 68, 68, 0.1);
+  
+  --input-bg: rgba(255, 255, 255, 0.05);
+  --input-border: rgba(255, 255, 255, 0.1);
+  --input-focus: rgba(99, 102, 241, 0.5);
+  --input-hover: rgba(255, 255, 255, 0.08);
+  
+  --transition-fast: 150ms ease;
+  --transition-medium: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================
+   Modal Backdrop
+   ============================================ */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--modal-backdrop-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  animation: fadeIn 200ms ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ============================================
+   Modal Container
+   ============================================ */
+.modal-container {
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  background: var(--modal-bg);
+  border: 1px solid var(--modal-border);
+  border-radius: 20px;
+  box-shadow: var(--modal-shadow);
+  overflow: hidden;
+  animation: slideUp 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ============================================
+   Form Header
+   ============================================ */
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 28px;
+  border-bottom: 1px solid var(--modal-border);
+}
+
+.form-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  letter-spacing: -0.02em;
+}
+
+.close-btn {
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all var(--transition-fast);
+  outline: none;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+.close-btn:active {
+  transform: scale(0.95);
+}
+
+/* ============================================
+   Form Content
+   ============================================ */
+.form-content {
+  padding: 28px;
+  overflow-y: auto;
+  max-height: calc(90vh - 140px);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  letter-spacing: -0.01em;
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  transition: all var(--transition-fast);
+  outline: none;
+}
+
+.form-input::placeholder {
+  color: var(--text-muted);
+}
+
+.form-input:hover,
+.form-select:hover {
+  border-color: var(--input-hover);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.form-input:focus,
+.form-select:focus {
+  border-color: var(--input-focus);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.form-input-error {
+  border-color: var(--danger-color) !important;
+}
+
+.form-input-error:focus,
+.form-select:focus.form-input-error {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+}
+
+.form-error {
+  display: block;
+  font-size: 12px;
+  color: var(--danger-color);
+  margin-top: 6px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.form-select option {
+  background: var(--modal-bg);
+  color: var(--text-primary);
+}
+
+/* ============================================
+   Type Toggle
+   ============================================ */
+.type-toggle {
+  display: flex;
+  gap: 8px;
+}
+
+.type-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: var(--text-secondary);
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  outline: none;
+}
+
+.type-btn:hover {
+  border-color: var(--input-hover);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+}
+
+.type-btn-active {
+  background: var(--primary-gradient);
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.type-btn-active:hover {
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.5);
+}
+
+/* ============================================
+   Input Wrapper (for amount prefix)
+   ============================================ */
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-prefix {
+  position: absolute;
+  left: 16px;
+  font-size: 14px;
+  color: var(--text-muted);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  pointer-events: none;
+}
+
+.input-wrapper .form-input {
+  padding-left: 36px;
+}
+
+/* ============================================
+   Form Footer
+   ============================================ */
+.form-footer {
+  display: flex;
+  gap: 12px;
+  padding: 20px 28px;
+  border-top: 1px solid var(--modal-border);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.btn-primary,
+.btn-secondary {
+  flex: 1;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  border: none;
+  outline: none;
+}
+
+.btn-primary {
+  background: var(--primary-gradient);
+  color: white;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-primary:disabled:hover {
+  transform: none;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+}
+
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================================
+   Loading Spinner
+   ============================================ */
+.loading-spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--input-border);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  border-color: var(--input-hover);
+}
+
+/* ============================================
+   Focus States for Accessibility
+   ============================================ */
+.btn-primary:focus-visible,
+.btn-secondary:focus-visible,
+.type-btn:focus-visible,
+.close-btn:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* ============================================
+   Scrollbar Styling
+   ============================================ */
+.form-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.form-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.form-content::-webkit-scrollbar-thumb {
+  background: var(--input-border);
+  border-radius: 3px;
+}
+
+.form-content::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ============================================
+   Responsive Design
+   ============================================ */
+@media (max-width: 768px) {
+  .modal-container {
+    max-width: 95%;
+    margin: 16px;
+    max-height: calc(100vh - 32px);
+  }
+  
+  .form-header,
+  .form-content,
+  .form-footer {
+    padding: 20px;
+  }
+  
+  .form-title {
+    font-size: 18px;
+  }
+  
+  .form-footer {
+    flex-direction: column;
+  }
+  
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .modal-container {
+    margin: 12px;
+    border-radius: 16px;
+  }
+  
+  .form-header,
+  .form-content,
+  .form-footer {
+    padding: 16px;
+  }
+  
+  .form-group {
+    margin-bottom: 16px;
+  }
+}
