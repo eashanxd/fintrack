@@ -6,7 +6,7 @@ import TransactionTable from "./TransactionTable";
 import Modal from "../Modal/Modal";
 import AddTransactionForm from "../Modal/AddTransactionForm";
 
-function Transactions({ transactions, onAddTransaction, onDeleteTransaction }) {
+function Transactions({ transactions, summary, onAddTransaction, onDeleteTransaction }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleAddTransaction = (newTransaction) => {
@@ -37,7 +37,7 @@ function Transactions({ transactions, onAddTransaction, onDeleteTransaction }) {
         </div>
 
         {/* Summary Row */}
-        <TransactionSummary />
+        <TransactionSummary transactions={transactions} summary={summary} />
 
         {/* Filters */}
         <TransactionFilters />

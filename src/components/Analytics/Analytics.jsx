@@ -8,6 +8,7 @@ import TopSpendingCategories from "./TopSpendingCategories";
 import FinancialInsights from "./FinancialInsights";
 
 function Analytics({ transactions, summary }) {
+  const hasData = transactions.length > 0;
   return (
     <div className="analytics-page">
       <div className="analytics-container">
@@ -36,43 +37,57 @@ function Analytics({ transactions, summary }) {
         </div>
 
         {/* KPI Cards */}
-        <KPICards summary={summary} />
+        <KPICards summary={summary} transactions={transactions} />
 
         {/* Charts Grid */}
-        <div className="charts-grid">
-          {/* Monthly Income vs Expenses */}
-          <div className="chart-card chart-card-large">
-            <IncomeVsExpensesChart />
-          </div>
+        {hasData ? (
+          <div className="charts-grid">
+            {/* Monthly Income vs Expenses */}
+            <div className="chart-card chart-card-large">
+              <IncomeVsExpensesChart transactions={transactions} />
+            </div>
 
-          {/* Expense by Category */}
-          <div className="chart-card">
-            <ExpenseByCategoryChart />
-          </div>
+            {/* Expense by Category */}
+            <div className="chart-card">
+              <ExpenseByCategoryChart transactions={transactions} />
+            </div>
 
-          {/* Weekly Spending */}
-          <div className="chart-card">
-            <WeeklySpendingChart />
-          </div>
+            {/* Weekly Spending */}
+            <div className="chart-card">
+              <WeeklySpendingChart transactions={transactions} />
+            </div>
 
-          {/* Savings Trend */}
-          <div className="chart-card">
-            <SavingsTrendChart />
+            {/* Savings Trend */}
+            <div className="chart-card">
+              <SavingsTrendChart transactions={transactions} summary={summary} />
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="charts-grid">
+            <div className="chart-card chart-card-large">
+              <div className="empty-state">
+                <div className="empty-state-icon">📊</div>
+                <h3 className="empty-state-title">No data to analyze</h3>
+                <p className="empty-state-description">Add transactions to see your financial analytics and charts.</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Bottom Section */}
-        <div className="analytics-bottom-section">
-          {/* Top Spending Categories */}
-          <div className="analytics-card">
-            <TopSpendingCategories />
-          </div>
+        {hasData ? (
+          <div className="analytics-bottom-section">
+            {/* Top Spending Categories */}
+            <div className="analytics-card">
+              <TopSpendingCategories transactions={transactions} />
+            </div>
 
-          {/* Financial Insights */}
-          <div className="analytics-card">
-            <FinancialInsights />
+            {/* Financial Insights */}
+            <div className="analytics-card">
+              <FinancialInsights transactions={transactions} />
+            </div>
           </div>
-        </div>
+        ) : null}
       </div>
     </div>
   );

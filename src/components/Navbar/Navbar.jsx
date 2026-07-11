@@ -1,6 +1,6 @@
 import "./NavBar.css";
 
-function Navbar({ currentPage, onNavigate }) {
+function Navbar({ currentPage, onNavigate, onLogout }) {
   return (
     <nav className="navbar">
       <div className="navbar-container">
@@ -75,14 +75,12 @@ function Navbar({ currentPage, onNavigate }) {
               <path d="M10 13H10.01" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
             </svg>
           </button>
-          <div className="action-divider"></div>
-          <button className="action-button action-button-profile">
-            <div className="profile-avatar">
-              <span>JD</span>
-            </div>
-            <svg className="profile-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4 6L8 10L12 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+          <button className="action-button action-button-logout" onClick={onLogout} aria-label="Logout">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M15 10H3M3 10L6 7M3 10L6 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M9 5C9 3.89543 9.89543 3 11 3H15C16.1046 3 17 3.89543 17 5V15C17 16.1046 16.1046 17 15 17H11C9.89543 17 9 16.1046 9 15" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
+            Logout
           </button>
         </div>
       </div>

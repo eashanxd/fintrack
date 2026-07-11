@@ -1,14 +1,31 @@
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import "./Analytics.css";
 
-function SavingsTrendChart() {
+function SavingsTrendChart({ transactions, summary }) {
+  if (transactions.length === 0) {
+    return (
+      <div className="chart-container">
+        <div className="chart-header">
+          <h3 className="chart-title">Savings Trend</h3>
+          <span className="chart-badge">Last 6 months</span>
+        </div>
+        <div className="empty-state">
+          <div className="empty-state-icon">💰</div>
+          <h3 className="empty-state-title">No savings data</h3>
+          <p className="empty-state-description">Add transactions to track your savings over time.</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Simplified savings trend based on current savings
   const data = [
-    { month: "Jan", savings: 1200 },
-    { month: "Feb", savings: 1400 },
-    { month: "Mar", savings: 1600 },
-    { month: "Apr", savings: 1900 },
-    { month: "May", savings: 2200 },
-    { month: "Jun", savings: 2800 },
+    { month: "Jan", savings: summary.savings * 0.5 },
+    { month: "Feb", savings: summary.savings * 0.6 },
+    { month: "Mar", savings: summary.savings * 0.7 },
+    { month: "Apr", savings: summary.savings * 0.8 },
+    { month: "May", savings: summary.savings * 0.9 },
+    { month: "Jun", savings: summary.savings },
   ];
 
   return (

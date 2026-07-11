@@ -38,9 +38,11 @@ function SummaryCard({ title, value, change, trend, icon }) {
       <div className="summary-card-content">
         <p className="summary-card-title">{title}</p>
         <p className="summary-card-value">{value}</p>
-        <div className={`summary-card-change summary-card-change-${trend}`}>
-          {trend === "up" ? "↑" : "↓"} {change}
-        </div>
+        {change && (
+          <div className={`summary-card-change summary-card-change-${trend}`}>
+            {trend === "up" ? "↑" : "↓"} {change}
+          </div>
+        )}
       </div>
     </div>
   );

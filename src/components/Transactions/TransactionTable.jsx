@@ -52,6 +52,18 @@ function TransactionTable({ transactions, onDeleteTransaction }) {
     setDeleteConfirmation(null);
   };
 
+  if (tableTransactions.length === 0) {
+    return (
+      <div className="transaction-table-empty">
+        <div className="empty-state">
+          <div className="empty-state-icon">📋</div>
+          <h3 className="empty-state-title">No transactions found</h3>
+          <p className="empty-state-description">Add your first transaction to start tracking your finances.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="transaction-table-container">

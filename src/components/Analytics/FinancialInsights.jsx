@@ -1,6 +1,22 @@
 import "./Analytics.css";
 
-function FinancialInsights() {
+function FinancialInsights({ transactions }) {
+  if (transactions.length === 0) {
+    return (
+      <div className="financial-insights">
+        <div className="section-header">
+          <h3 className="section-title">Financial Insights</h3>
+          <span className="section-badge">AI-powered</span>
+        </div>
+        <div className="empty-state">
+          <div className="empty-state-icon">💡</div>
+          <h3 className="empty-state-title">No insights yet</h3>
+          <p className="empty-state-description">Add transactions to receive personalized financial insights.</p>
+        </div>
+      </div>
+    );
+  }
+
   const insights = [
     {
       type: "positive",

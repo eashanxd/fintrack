@@ -1,62 +1,34 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Navbar from "./components/NavBar/NavBar";
 import Dashboard from "./components/Dashboard/Dashboard";
 import Transactions from "./components/Transactions/Transactions";
 import Analytics from "./components/Analytics/Analytics";
 import Settings from "./components/Settings/Settings";
+import Auth from "./components/Auth/Auth";
+import { getUser, removeUser } from "./services/api";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("dashboard");
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+
+  // Check localStorage for existing user on mount
+  useEffect(() => {
+    const user = getUser();
+    if (user) {
+      setIsAuthenticated(true);
+      setCurrentUser(user);
+    }
+  }, []);
   
   // Shared transaction state
-  const [transactions, setTransactions] = useState([
-    {
-      id: 1,
-      name: "Netflix Subscription",
-      category: "Entertainment",
-      amount: -15.99,
-      date: "Today",
-      icon: "🎬",
-    },
-    {
-      id: 2,
-      name: "Salary Deposit",
-      category: "Income",
-      amount: 4500.00,
-      date: "Yesterday",
-      icon: "💰",
-    },
-    {
-      id: 3,
-      name: "Amazon Purchase",
-      category: "Shopping",
-      amount: -89.50,
-      date: "Yesterday",
-      icon: "🛒",
-    },
-    {
-      id: 4,
-      name: "Uber Ride",
-      category: "Transportation",
-      amount: -24.30,
-      date: "2 days ago",
-      icon: "🚗",
-    },
-    {
-      id: 5,
-      name: "Starbucks",
-      category: "Food & Dining",
-      amount: -8.45,
-      date: "3 days ago",
-      icon: "☕",
-    },
-  ]);
+  const [transactions, setTransactions] = useState([]);
 
   const [summary, setSummary] = useState({
-    totalBalance: 48574.21,
-    income: 8250.00,
-    expenses: 3420.50,
-    savings: 4829.50,
+    totalBalance: 0,
+    income: 0,
+    expenses: 0,
+    savings: 0,
   });
 
   const handleNavigate = (page) => {
@@ -142,31 +114,52 @@ function App() {
     });
   };
 
+  const handleLogin = (user) => {
+    setIsAuthenticated(true);
+    setCurrentUser(user);
+    setCurrentPage("dashboard");
+  };
+
+  const handleLogout = () => {
+    removeUser();
+    setIsAuthenticated(false);
+    setCurrentUser(null);
+    setCurrentPage("dashboard");
+  };
+
   return (
     <>
-      <Navbar currentPage={currentPage} onNavigate={handleNavigate} />
-      {currentPage === "dashboard" && (
-        <Dashboard 
-          transactions={transactions}
-          summary={summary}
-          onAddTransaction={handleAddTransaction}
-        />
-      )}
-      {currentPage === "transactions" && (
-        <Transactions 
-          transactions={transactions}
-          onAddTransaction={handleAddTransaction}
-          onDeleteTransaction={handleDeleteTransaction}
-        />
-      )}
-      {currentPage === "analytics" && (
-        <Analytics 
-          transactions={transactions}
-          summary={summary}
-        />
-      )}
-      {currentPage === "settings" && (
-        <Settings />
+      {!isAuthenticated ? (
+        <Auth onLogin={handleLogin} />
+      ) : (
+        <>
+          <Navbar currentPage={currentPage} onNavigate={handleNavigate} onLogout={handleLogout} />
+          {currentPage === "dashboard" && (
+            <Dashboard 
+              transactions={transactions}
+              summary={summary}
+              onAddTransaction={handleAddTransaction}
+              currentUser={currentUser}
+            />
+          )}
+          {currentPage === "transactions" && (
+            <Transactions 
+              transactions={transactions}
+              summary={summary}
+              onAddTransaction={handleAddTransaction}
+              onDeleteTransaction={handleDeleteTransaction}
+            />
+          )}
+          {currentPage === "analytics" && (
+            <Analytics 
+              transactions={transactions}
+              summary={summary}
+            />
+          )}
+          {currentPage === "settings" && (
+            <Settings />
+          )}
+        </>
       )}
     </>
   );

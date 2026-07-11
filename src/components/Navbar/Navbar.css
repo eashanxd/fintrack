@@ -304,52 +304,24 @@
   }
 }
 
-.action-divider {
-  width: 1px;
-  height: 24px;
-  background: var(--border-color);
-  margin: 0 4px;
-}
-
-.action-button-profile {
+.action-button-logout {
   gap: 8px;
-  padding: 6px 8px 6px 6px;
+  padding: 8px 16px;
   height: 40px;
   border-radius: 10px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
   transition: all var(--transition-fast);
 }
 
-.action-button-profile:hover {
+.action-button-logout:hover {
+  color: var(--text-primary);
   background: var(--bg-hover);
 }
 
-.action-button-profile:active {
+.action-button-logout:active {
   transform: scale(0.98);
-}
-
-.profile-avatar {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  background: var(--avatar-gradient);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  
-  font-size: 12px;
-  font-weight: 600;
-  color: white;
-  letter-spacing: -0.01em;
-}
-
-.profile-chevron {
-  color: var(--text-muted);
-  transition: transform var(--transition-fast);
-}
-
-.action-button-profile:hover .profile-chevron {
-  color: var(--text-secondary);
-  transform: translateY(1px);
 }
 
 /* ============================================
@@ -389,12 +361,9 @@
     display: none;
   }
   
-  .action-divider {
-    display: none;
-  }
-  
-  .profile-chevron {
-    display: none;
+  .action-button-logout {
+    padding: 8px 12px;
+    font-size: 13px;
   }
 }
 
