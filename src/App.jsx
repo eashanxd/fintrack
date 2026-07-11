@@ -1,25 +1,15 @@
-import { useState, useEffect } from "react";
-import Navbar from "./components/NavBar/NavBar";
+import { useState } from "react";
+import Navbar from "./components/Navbar/Navbar";
 import Dashboard from "./components/Dashboard/Dashboard";
 import Transactions from "./components/Transactions/Transactions";
 import Analytics from "./components/Analytics/Analytics";
 import Settings from "./components/Settings/Settings";
 import Auth from "./components/Auth/Auth";
-import { getUser, removeUser } from "./services/api";
+import { useAuth } from "./context/AuthContext";
 
 function App() {
   const [currentPage, setCurrentPage] = useState("dashboard");
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
-
-  // Check localStorage for existing user on mount
-  useEffect(() => {
-    const user = getUser();
-    if (user) {
-      setIsAuthenticated(true);
-      setCurrentUser(user);
-    }
-  }, []);
+  const { user, logout } = useAuth();
   
   // Shared transaction state
   const [transactions, setTransactions] = useState([]);
@@ -114,23 +104,15 @@ function App() {
     });
   };
 
-  const handleLogin = (user) => {
-    setIsAuthenticated(true);
-    setCurrentUser(user);
-    setCurrentPage("dashboard");
-  };
-
-  const handleLogout = () => {
-    removeUser();
-    setIsAuthenticated(false);
-    setCurrentUser(null);
+  const handleLogout = async () => {
+    await logout();
     setCurrentPage("dashboard");
   };
 
   return (
     <>
-      {!isAuthenticated ? (
-        <Auth onLogin={handleLogin} />
+      {!user ? (
+        <Auth />
       ) : (
         <>
           <Navbar currentPage={currentPage} onNavigate={handleNavigate} onLogout={handleLogout} />
@@ -139,7 +121,7 @@ function App() {
               transactions={transactions}
               summary={summary}
               onAddTransaction={handleAddTransaction}
-              currentUser={currentUser}
+              currentUser={user}
             />
           )}
           {currentPage === "transactions" && (

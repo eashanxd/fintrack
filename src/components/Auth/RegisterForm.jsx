@@ -3,9 +3,9 @@ import "./Auth.css";
 import InputField from "./InputField";
 import PasswordInput from "./PasswordInput";
 import SocialLoginButtons from "./SocialLoginButtons";
-import { register } from "../../services/api";
+import { useAuth } from "../../context/AuthContext";
 
-function RegisterForm({ onLogin, onToggleMode }) {
+function RegisterForm({ onToggleMode }) {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,6 +14,8 @@ function RegisterForm({ onLogin, onToggleMode }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+
+  const { register } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,29 +34,25 @@ function RegisterForm({ onLogin, onToggleMode }) {
     setIsLoading(true);
     
     try {
-      const response = await register({ name: fullName, email, password });
-      
-      if (response.success) {
-        setSuccess(true);
-        // Redirect to login after 2 seconds
-        setTimeout(() => {
-          onToggleMode();
-        }, 2000);
-      } else {
-        setError(response.message || "Registration failed. Please try again.");
-      }
-    } catch (err) {
-      setError("Network error. Please check your connection and try again.");
-    } finally {
-      setIsLoading(false);
-    }
+  const user = await register(email, password, fullName);
+
+  if (user) {
+    setSuccess(true);
+  } else {
+    setError("Registration failed. Please try again.");
+  }
+} catch (err) {
+  setError(err.message || "Registration failed.");
+} finally {
+  setIsLoading(false);
+}
   };
 
   return (
     <form className="auth-form" onSubmit={handleSubmit}>
       {success && (
         <div className="auth-success">
-          Registration successful! Redirecting to login...
+          Registration successful! Redirecting to your dashboard...
         </div>
       )}
       {error && (

@@ -3,14 +3,16 @@ import "./Auth.css";
 import InputField from "./InputField";
 import PasswordInput from "./PasswordInput";
 import SocialLoginButtons from "./SocialLoginButtons";
-import { login, storeUser } from "../../services/api";
+import { useAuth } from "../../context/AuthContext";
 
-function LoginForm({ onLogin, onToggleMode }) {
+function LoginForm({ onToggleMode }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,16 +20,13 @@ function LoginForm({ onLogin, onToggleMode }) {
     setIsLoading(true);
     
     try {
-      const response = await login({ email, password });
-      
-      if (response.success) {
-        storeUser(response.user);
-        onLogin(response.user);
-      } else {
-        setError(response.message || "Login failed. Please try again.");
-      }
+      await login(email, password); 
     } catch (err) {
-      setError("Network error. Please check your connection and try again.");
+      if (err.message) {
+        setError(err.message);
+      } else {
+        setError("Unable to sign in. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }

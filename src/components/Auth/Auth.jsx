@@ -3,7 +3,7 @@ import "./Auth.css";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 
-function Auth({ onLogin }) {
+function Auth() {
   const [isLogin, setIsLogin] = useState(true);
 
   const toggleMode = () => {
@@ -52,9 +52,9 @@ function Auth({ onLogin }) {
           {/* Form */}
           <div className="auth-form-container">
             {isLogin ? (
-              <LoginForm onLogin={onLogin} onToggleMode={toggleMode} />
+              <LoginForm onToggleMode={toggleMode} />
             ) : (
-              <RegisterForm onLogin={onLogin} onToggleMode={toggleMode} />
+              <RegisterForm onToggleMode={toggleMode} />
             )}
           </div>
         </div>
