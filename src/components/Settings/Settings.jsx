@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
+import { useAuth } from "../../contexts/AuthContext";
 import "./Settings.css";
 import SettingsSection from "./SettingsSection";
 import ToggleSwitch from "./ToggleSwitch";
+import { getSettings, saveSettings } from "../../services/settings";
 
 function Settings() {
+  const { user } = useAuth();
   const [settings, setSettings] = useState({
     // Profile
     name: "John Doe",
@@ -27,20 +30,44 @@ function Settings() {
   });
 
   const [hasChanges, setHasChanges] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [settingsDocumentId, setSettingsDocumentId] = useState(null);
 
-  // Load settings from Local Storage on mount
+  // Load settings from Appwrite on mount
   useEffect(() => {
-    const savedSettings = localStorage.getItem("fintrack-settings");
-    if (savedSettings) {
-      setSettings(JSON.parse(savedSettings));
-    }
-  }, []);
+    const loadSettings = async () => {
+      if (!user) return;
+      
+      try {
+        setIsLoading(true);
+        const savedSettings = await getSettings(user.$id);
+        
+        if (savedSettings) {
+          setSettings({
+            name: savedSettings.name || "John Doe",
+            email: savedSettings.email || user.email || "john.doe@example.com",
+            currency: savedSettings.currency || "USD",
+            language: savedSettings.language || "English",
+            timeZone: savedSettings.timeZone || "UTC-5",
+            darkMode: savedSettings.darkMode !== undefined ? savedSettings.darkMode : true,
+            emailNotifications: savedSettings.emailNotifications !== undefined ? savedSettings.emailNotifications : true,
+            pushNotifications: savedSettings.pushNotifications !== undefined ? savedSettings.pushNotifications : false,
+            budgetAlerts: savedSettings.budgetAlerts !== undefined ? savedSettings.budgetAlerts : true,
+            autoCategorize: savedSettings.autoCategorize !== undefined ? savedSettings.autoCategorize : true,
+            showBalance: savedSettings.showBalance !== undefined ? savedSettings.showBalance : true,
+            compactView: savedSettings.compactView !== undefined ? savedSettings.compactView : false,
+          });
+          setSettingsDocumentId(savedSettings.$id);
+        }
+      } catch (error) {
+        console.error('Error loading settings:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  // Save settings to Local Storage whenever they change
-  useEffect(() => {
-    localStorage.setItem("fintrack-settings", JSON.stringify(settings));
-    setHasChanges(true);
-  }, [settings]);
+    loadSettings();
+  }, [user]);
 
   const handleSettingChange = (key, value) => {
     setSettings((prev) => ({
@@ -49,16 +76,27 @@ function Settings() {
     }));
   };
 
-  const handleSaveChanges = () => {
-    localStorage.setItem("fintrack-settings", JSON.stringify(settings));
-    setHasChanges(false);
-    alert("Settings saved successfully!");
+  const handleSaveChanges = async () => {
+    if (!user) return;
+    
+    try {
+      setIsLoading(true);
+      const document = await saveSettings(settings, user.$id, settingsDocumentId);
+      setSettingsDocumentId(document.$id);
+      setHasChanges(false);
+      alert("Settings saved successfully!");
+    } catch (error) {
+      console.error('Error saving settings:', error);
+      alert('Failed to save settings. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleResetToDefault = () => {
     const defaultSettings = {
       name: "John Doe",
-      email: "john.doe@example.com",
+      email: user?.email || "john.doe@example.com",
       currency: "USD",
       language: "English",
       timeZone: "UTC-5",
@@ -71,17 +109,11 @@ function Settings() {
       compactView: false,
     };
     setSettings(defaultSettings);
-    setHasChanges(false);
+    setHasChanges(true);
   };
 
   const handleChangePassword = () => {
     alert("Change password modal would open here");
-  };
-
-  const handleDeleteAccount = () => {
-    if (confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
-      alert("Account deletion would be processed here");
-    }
   };
 
   return (
@@ -283,11 +315,6 @@ function Settings() {
                   </button>
                 </div>
               </div>
-              <div className="security-actions">
-                <button className="btn-danger-outline" onClick={handleDeleteAccount}>
-                  Delete Account
-                </button>
-              </div>
             </div>
           </SettingsSection>
 
@@ -299,19 +326,6 @@ function Settings() {
                   <span className="about-label">Version</span>
                   <span className="about-value">1.0.0</span>
                 </div>
-                <div className="about-item">
-                  <span className="about-label">Build</span>
-                  <span className="about-value">2024.07.11</span>
-                </div>
-                <div className="about-item">
-                  <span className="about-label">License</span>
-                  <span className="about-value">MIT License</span>
-                </div>
-              </div>
-              <div className="about-links">
-                <a href="#" className="about-link">Privacy Policy</a>
-                <a href="#" className="about-link">Terms of Service</a>
-                <a href="#" className="about-link">Support</a>
               </div>
             </div>
           </SettingsSection>
