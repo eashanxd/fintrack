@@ -1,4 +1,4 @@
-import "./NavBar.css";
+import "./Navbar.css";
 
 function Navbar({ currentPage, onNavigate, onLogout }) {
   return (
